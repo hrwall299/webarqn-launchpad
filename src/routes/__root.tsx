@@ -77,14 +77,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "WEBARQN — Websites, CRM, SEO & Digital Marketing Agency" },
+      {
+        name: "description",
+        content:
+          "WEBARQN builds modern websites, CRM dashboards, SEO and digital marketing solutions for businesses that want to grow online.",
+      },
+      { name: "author", content: "WEBARQN" },
+      { property: "og:title", content: "WEBARQN — Websites That Grow Your Business" },
+      {
+        property: "og:description",
+        content:
+          "Modern Websites, CRM Dashboards, SEO & Digital Marketing Solutions for growing businesses.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "WEBARQN — Websites That Grow Your Business" },
+      {
+        name: "twitter:description",
+        content:
+          "Modern Websites, CRM Dashboards, SEO & Digital Marketing Solutions.",
+      },
     ],
     links: [
       {
@@ -92,6 +106,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "canonical", href: "/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "WEBARQN",
+          description:
+            "Digital agency building websites, CRM dashboards, SEO and marketing solutions.",
+          url: "/",
+          sameAs: [
+            "https://instagram.com/webarqn",
+            "https://facebook.com/webarqn",
+            "https://linkedin.com/company/webarqn",
+          ],
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,
