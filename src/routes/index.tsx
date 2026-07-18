@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { motion, useInView, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useInView, useMotionValue, useSpring, AnimatePresence, type Variants } from "framer-motion";
 import {
   ArrowRight,
   MessageCircle,
@@ -221,12 +221,12 @@ function SectionHeader({
   );
 }
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
   show: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: i * 0.05 },
+    transition: { duration: 0.55, ease: "easeOut", delay: i * 0.05 },
   }),
 };
 
