@@ -77,18 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "WEBARQN — Websites, CRM, SEO & Digital Marketing Agency" },
+      { title: "WEBARQN — Websites That Grow Your Business" },
       {
         name: "description",
         content:
-          "WEBARQN builds modern websites, CRM dashboards, SEO and digital marketing solutions for businesses that want to grow online.",
+          "WEBARQN builds modern websites, CRM dashboards, SEO and digital marketing solutions for businesses that want to grow online. Plans from ₹2,999.",
       },
       { name: "author", content: "WEBARQN" },
       { property: "og:title", content: "WEBARQN — Websites That Grow Your Business" },
       {
         property: "og:description",
         content:
-          "Modern Websites, CRM Dashboards, SEO & Digital Marketing Solutions for growing businesses.",
+          "WEBARQN builds modern websites, CRM dashboards, SEO and digital marketing solutions for businesses that want to grow online. Plans from ₹2,999.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
@@ -97,15 +97,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "twitter:description",
         content:
-          "Modern Websites, CRM Dashboards, SEO & Digital Marketing Solutions.",
+          "WEBARQN builds modern websites, CRM dashboards, SEO and digital marketing solutions for businesses that want to grow online. Plans from ₹2,999.",
       },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/bd381f47-fcf5-4ef1-abdb-4f51f217ec2a" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/bd381f47-fcf5-4ef1-abdb-4f51f217ec2a" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "canonical", href: "/" },
     ],
     scripts: [
