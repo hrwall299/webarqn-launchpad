@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion, useInView, useMotionValue, useSpring, AnimatePresence, type Variants } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ArrowRight,
   MessageCircle,
@@ -329,7 +330,7 @@ const FEATURES = [
 
 function Features() {
   return (
-    <section className="py-16 sm:py-24">
+    <section className="py-10 sm:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
           {FEATURES.map((f, i) => (
@@ -376,7 +377,7 @@ const SERVICES = [
 
 function Services() {
   return (
-    <section id="services" className="py-20 sm:py-28">
+    <section id="services" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Services"
@@ -423,7 +424,7 @@ const INDUSTRIES = [
 
 function Industries() {
   return (
-    <section id="industries" className="py-20 sm:py-28">
+    <section id="industries" className="py-14 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Industries We Serve"
@@ -480,7 +481,7 @@ const STATS = [
 
 function Stats() {
   return (
-    <section className="relative py-20 sm:py-24">
+    <section className="relative py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-border/60 bg-gradient-to-br from-[#0B1220] to-[#111a30] p-8 text-white shadow-2xl sm:p-12">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
@@ -572,7 +573,7 @@ const PLANS = [
 
 function Pricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28">
+    <section id="pricing" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Pricing"
@@ -648,7 +649,7 @@ const WHY = [
 
 function WhyChoose() {
   return (
-    <section className="py-20 sm:py-28">
+    <section className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Why WEBARQN"
@@ -682,7 +683,7 @@ const STEPS = ["Discuss", "Planning", "Design", "Development", "Testing", "Launc
 
 function Process() {
   return (
-    <section id="process" className="py-20 sm:py-28">
+    <section id="process" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Our Process"
@@ -749,7 +750,7 @@ const FAQS = [
 
 function FAQ() {
   return (
-    <section id="faq" className="py-20 sm:py-28">
+    <section id="faq" className="py-14 sm:py-20">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <SectionHeader eyebrow="FAQ" title="Questions, answered" />
         <Accordion type="single" collapsible className="w-full">
@@ -786,26 +787,31 @@ const BUDGETS = ["₹2,999 – ₹5,999", "₹5,999 – ₹8,999", "₹8,999 –
 function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-    try {
-      const key = "webarqn_enquiries";
-      const prev = JSON.parse(localStorage.getItem(key) ?? "[]");
-      prev.push({ ...data, at: new Date().toISOString() });
-      localStorage.setItem(key, JSON.stringify(prev));
-    } catch {}
-    setTimeout(() => {
-      setSubmitting(false);
-      setSubmitted(true);
-      toast.success("Enquiry received! We'll reach out within 24 hours.");
-      form.reset();
-    }, 600);
+    const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+    const { error } = await supabase.from("enquiries").insert({
+      name: data.name,
+      business_name: data.business || null,
+      email: data.email,
+      phone: data.phone || null,
+      service: data.service || null,
+      budget: data.budget || null,
+      message: data.message || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Could not send enquiry. Please try again or WhatsApp us.");
+      return;
+    }
+    setSubmitted(true);
+    toast.success("Enquiry received! We'll reach out within 24 hours.");
+    form.reset();
   };
   return (
-    <section id="contact" className="py-20 sm:py-28">
+    <section id="contact" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Contact"
