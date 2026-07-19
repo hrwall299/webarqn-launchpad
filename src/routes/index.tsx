@@ -329,7 +329,7 @@ const FEATURES = [
 
 function Features() {
   return (
-    <section className="py-16 sm:py-24">
+    <section className="py-10 sm:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
           {FEATURES.map((f, i) => (
@@ -376,7 +376,7 @@ const SERVICES = [
 
 function Services() {
   return (
-    <section id="services" className="py-20 sm:py-28">
+    <section id="services" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Services"
@@ -423,7 +423,7 @@ const INDUSTRIES = [
 
 function Industries() {
   return (
-    <section id="industries" className="py-20 sm:py-28">
+    <section id="industries" className="py-14 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Industries We Serve"
@@ -480,7 +480,7 @@ const STATS = [
 
 function Stats() {
   return (
-    <section className="relative py-20 sm:py-24">
+    <section className="relative py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-border/60 bg-gradient-to-br from-[#0B1220] to-[#111a30] p-8 text-white shadow-2xl sm:p-12">
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
@@ -572,7 +572,7 @@ const PLANS = [
 
 function Pricing() {
   return (
-    <section id="pricing" className="py-20 sm:py-28">
+    <section id="pricing" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Pricing"
@@ -648,7 +648,7 @@ const WHY = [
 
 function WhyChoose() {
   return (
-    <section className="py-20 sm:py-28">
+    <section className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Why WEBARQN"
@@ -682,7 +682,7 @@ const STEPS = ["Discuss", "Planning", "Design", "Development", "Testing", "Launc
 
 function Process() {
   return (
-    <section id="process" className="py-20 sm:py-28">
+    <section id="process" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Our Process"
@@ -749,7 +749,7 @@ const FAQS = [
 
 function FAQ() {
   return (
-    <section id="faq" className="py-20 sm:py-28">
+    <section id="faq" className="py-14 sm:py-20">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <SectionHeader eyebrow="FAQ" title="Questions, answered" />
         <Accordion type="single" collapsible className="w-full">
@@ -805,7 +805,7 @@ function Contact() {
     }, 600);
   };
   return (
-    <section id="contact" className="py-20 sm:py-28">
+    <section id="contact" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Contact"
