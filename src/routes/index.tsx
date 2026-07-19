@@ -787,23 +787,28 @@ const BUDGETS = ["₹2,999 – ₹5,999", "₹5,999 – ₹8,999", "₹8,999 –
 function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-    try {
-      const key = "webarqn_enquiries";
-      const prev = JSON.parse(localStorage.getItem(key) ?? "[]");
-      prev.push({ ...data, at: new Date().toISOString() });
-      localStorage.setItem(key, JSON.stringify(prev));
-    } catch {}
-    setTimeout(() => {
-      setSubmitting(false);
-      setSubmitted(true);
-      toast.success("Enquiry received! We'll reach out within 24 hours.");
-      form.reset();
-    }, 600);
+    const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+    const { error } = await supabase.from("enquiries").insert({
+      name: data.name,
+      business_name: data.business || null,
+      email: data.email,
+      phone: data.phone || null,
+      service: data.service || null,
+      budget: data.budget || null,
+      message: data.message || null,
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Could not send enquiry. Please try again or WhatsApp us.");
+      return;
+    }
+    setSubmitted(true);
+    toast.success("Enquiry received! We'll reach out within 24 hours.");
+    form.reset();
   };
   return (
     <section id="contact" className="py-14 sm:py-20">
