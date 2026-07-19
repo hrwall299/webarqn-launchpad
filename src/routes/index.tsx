@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion, useInView, useMotionValue, useSpring, AnimatePresence, type Variants } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ArrowRight,
   MessageCircle,
