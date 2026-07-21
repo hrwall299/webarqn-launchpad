@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+// Landing page for WEBARQN. Rendered at "/" by src/App.tsx.
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { motion, useInView, useMotionValue, useSpring, AnimatePresence, type Variants } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -60,19 +60,9 @@ import {
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "WEBARQN — Websites That Grow Your Business" },
-      {
-        name: "description",
-        content:
-          "WEBARQN builds modern websites, CRM dashboards, SEO and digital marketing solutions for businesses that want to grow online. Plans from ₹2,999.",
-      },
-    ],
-  }),
-  component: LandingPage,
-});
+export default function HomePage() {
+  return <LandingPage />;
+}
 
 /* ---------- Theme toggle ---------- */
 function useTheme() {
