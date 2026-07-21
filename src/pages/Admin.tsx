@@ -1,15 +1,10 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Download, LogOut, Search, Trash2, Inbox, Shield, ExternalLink } from "lucide-react";
-
-export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin — WEBARQN" }, { name: "robots", content: "noindex" }] }),
-  component: AdminPage,
-});
 
 type EnquiryStatus = "new" | "contacted" | "quotation_sent" | "follow_up" | "won" | "lost";
 
@@ -35,7 +30,7 @@ const STATUS_META: Record<EnquiryStatus, { label: string; className: string }> =
   lost: { label: "Lost", className: "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300" },
 };
 
-function AdminPage() {
+export default function AdminPage() {
   const navigate = useNavigate();
   const [rows, setRows] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +38,10 @@ function AdminPage() {
   const [filter, setFilter] = useState<"all" | EnquiryStatus>("all");
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkedRole, setCheckedRole] = useState(false);
+
+  useEffect(() => {
+    document.title = "Admin — WEBARQN";
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -63,7 +62,10 @@ function AdminPage() {
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       if (u.user) {
-        const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", u.user.id);
+        const { data: roles } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", u.user.id);
         setIsAdmin(!!roles?.some((r) => r.role === "admin"));
       }
       setCheckedRole(true);
@@ -144,7 +146,7 @@ function AdminPage() {
 
   async function signOut() {
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate("/auth", { replace: true });
   }
 
   return (
@@ -152,11 +154,18 @@ function AdminPage() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <Link to="/" className="text-base font-bold tracking-tight">WEBARQN</Link>
-            <span className="rounded-full bg-[#2563EB]/10 px-2 py-0.5 text-xs font-medium text-[#2563EB]">Admin</span>
+            <Link to="/" className="text-base font-bold tracking-tight">
+              WEBARQN
+            </Link>
+            <span className="rounded-full bg-[#2563EB]/10 px-2 py-0.5 text-xs font-medium text-[#2563EB]">
+              Admin
+            </span>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/" className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline-flex sm:items-center sm:gap-1">
+            <Link
+              to="/"
+              className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline-flex sm:items-center sm:gap-1"
+            >
               View site <ExternalLink className="h-3.5 w-3.5" />
             </Link>
             <Button variant="outline" size="sm" onClick={signOut}>
@@ -172,7 +181,10 @@ function AdminPage() {
             <Shield className="mt-0.5 h-4 w-4 flex-none" />
             <div>
               <div className="font-semibold">No admin role yet</div>
-              <div className="mt-0.5">Your account is signed in but hasn't been granted admin access. Ask an existing admin (or the site owner) to promote you. Enquiries will appear here once your role is added.</div>
+              <div className="mt-0.5">
+                Your account is signed in but hasn't been granted admin access. Ask an existing admin
+                (or the site owner) to promote you. Enquiries will appear here once your role is added.
+              </div>
             </div>
           </div>
         )}
@@ -180,7 +192,10 @@ function AdminPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <StatCard label="Total enquiries" value={rows.length} />
           <StatCard label="New" value={counts.new ?? 0} />
-          <StatCard label="In progress" value={(counts.contacted ?? 0) + (counts.quotation_sent ?? 0) + (counts.follow_up ?? 0)} />
+          <StatCard
+            label="In progress"
+            value={(counts.contacted ?? 0) + (counts.quotation_sent ?? 0) + (counts.follow_up ?? 0)}
+          />
           <StatCard label="Won" value={counts.won ?? 0} />
         </div>
 
@@ -196,7 +211,9 @@ function AdminPage() {
               />
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>All · {counts.all}</FilterChip>
+              <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>
+                All · {counts.all}
+              </FilterChip>
               {(Object.keys(STATUS_META) as EnquiryStatus[]).map((s) => (
                 <FilterChip key={s} active={filter === s} onClick={() => setFilter(s)}>
                   {STATUS_META[s].label} · {counts[s] ?? 0}
@@ -232,15 +249,32 @@ function AdminPage() {
                   {filtered.map((r) => (
                     <tr key={r.id} className="border-b border-border/40 align-top hover:bg-muted/20">
                       <td className="whitespace-nowrap px-4 py-3 text-xs text-muted-foreground">
-                        {new Date(r.created_at).toLocaleDateString()}<br />
-                        <span className="text-[11px]">{new Date(r.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                        {new Date(r.created_at).toLocaleDateString()}
+                        <br />
+                        <span className="text-[11px]">
+                          {new Date(r.created_at).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="font-medium text-foreground">{r.name}</div>
-                        {r.business_name && <div className="text-xs text-muted-foreground">{r.business_name}</div>}
+                        {r.business_name && (
+                          <div className="text-xs text-muted-foreground">{r.business_name}</div>
+                        )}
                         <div className="mt-1 space-y-0.5 text-xs">
-                          <a href={`mailto:${r.email}`} className="block text-[#2563EB] hover:underline">{r.email}</a>
-                          {r.phone && <a href={`tel:${r.phone}`} className="block text-muted-foreground hover:text-foreground">{r.phone}</a>}
+                          <a href={`mailto:${r.email}`} className="block text-[#2563EB] hover:underline">
+                            {r.email}
+                          </a>
+                          {r.phone && (
+                            <a
+                              href={`tel:${r.phone}`}
+                              className="block text-muted-foreground hover:text-foreground"
+                            >
+                              {r.phone}
+                            </a>
+                          )}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-xs">
@@ -257,7 +291,9 @@ function AdminPage() {
                           className={`rounded-full border-0 px-2.5 py-1 text-xs font-semibold outline-none ring-1 ring-inset ring-transparent focus:ring-[#2563EB] ${STATUS_META[r.status].className}`}
                         >
                           {(Object.keys(STATUS_META) as EnquiryStatus[]).map((s) => (
-                            <option key={s} value={s}>{STATUS_META[s].label}</option>
+                            <option key={s} value={s}>
+                              {STATUS_META[s].label}
+                            </option>
                           ))}
                         </select>
                       </td>
@@ -291,7 +327,15 @@ function StatCard({ label, value }: { label: string; value: number }) {
   );
 }
 
-function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function FilterChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
