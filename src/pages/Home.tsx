@@ -797,6 +797,7 @@ function LandingPage({ data }: { data: CmsData }) {
   };
   return (
     <div className="min-h-screen bg-background font-sans text-foreground antialiased [scroll-behavior:smooth]">
+      <ScrollProgress />
       <Nav logo={data.logo} />
       <main>
         {data.hero?.enabled !== false && <Hero hero={data.hero} />}
