@@ -132,7 +132,9 @@ function Nav({ logo }: { logo: { url: string; alt: string } }) {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <a href="#home" className="flex items-center gap-2 font-bold tracking-tight">
           {logo.url ? (
-            <img src={logo.url} alt={logo.alt || "WEBARQN"} className="h-8 w-auto" />
+            <span className="grid place-items-center rounded-full bg-white border border-black/90 overflow-hidden h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 lg:h-[72px] lg:w-[72px] p-1.5 shadow-sm">
+              <img src={logo.url} alt={logo.alt || "WEBARQN"} className="h-full w-full object-contain" />
+            </span>
           ) : (
             <>
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-[oklch(0.16_0.04_265)] text-white dark:bg-[oklch(0.62_0.2_264)]">
