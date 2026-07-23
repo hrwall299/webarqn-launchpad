@@ -381,7 +381,7 @@ function Services({ services }: { services: CmsData["services"] }) {
           {services.map((s, i) => {
             const Icon = getIcon(s.icon);
             return (
-              <motion.div key={s.id} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} custom={i}
+              <motion.div key={s.id} variants={cinematicReveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} custom={i}
                 className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 transition hover:-translate-y-1 hover:border-[#2563EB]/40 hover:shadow-xl hover:shadow-[#2563EB]/10">
                 <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#2563EB]/5 blur-2xl transition group-hover:bg-[#2563EB]/15" />
                 <div className="relative">
@@ -481,7 +481,7 @@ function Pricing({ plans }: { plans: CmsData["plans"] }) {
           subtitle="Pick the plan that matches your goals. All plans include free SSL, deployment and lifetime guidance." />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
           {plans.map((p, i) => (
-            <motion.div key={p.id} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} custom={i}
+            <motion.div key={p.id} variants={cinematicReveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} custom={i}
               className={`relative flex flex-col rounded-2xl border p-6 shadow-sm transition hover:-translate-y-1 ${p.popular ? "border-[#2563EB] bg-gradient-to-b from-[#2563EB]/5 to-transparent shadow-xl shadow-[#2563EB]/20" : "border-border/60 bg-card"}`}>
               {p.popular && (
                 <div className="absolute -top-3 right-6 rounded-full bg-[#2563EB] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-lg">Most Popular</div>
