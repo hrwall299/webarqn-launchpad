@@ -437,18 +437,37 @@ function Stats({ stats }: { stats: CmsData["stats"] }) {
   return (
     <section className="relative py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-border/60 bg-gradient-to-br from-[#0B1220] to-[#111a30] p-8 text-white shadow-2xl sm:p-12">
+        <motion.div
+          initial={{ opacity: 0, y: 60, scale: 0.96 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-[#0B1220] to-[#111a30] p-8 text-white shadow-2xl sm:p-12"
+        >
+          <motion.div
+            aria-hidden
+            animate={{ x: ["-120%", "220%"] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+            className="pointer-events-none absolute inset-y-0 -left-1/4 w-1/3 rotate-12 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-xl"
+          />
           <div className={`grid grid-cols-2 gap-8 md:grid-cols-${Math.max(1, Math.min(stats.length, 5))}`}>
-            {stats.map((s) => (
-              <div key={s.id} className="text-center">
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="text-center"
+              >
                 <div className="bg-gradient-to-r from-white to-[#93c5fd] bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
                   <Counter to={s.number} suffix={s.suffix} />
                 </div>
                 <div className="mt-2 text-xs font-medium uppercase tracking-wider text-white/60 sm:text-sm">{s.label}</div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
