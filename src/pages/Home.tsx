@@ -1,7 +1,7 @@
 // Landing page for WEBARQN. Fully driven by Supabase CMS data.
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
-  motion, useInView, useMotionValue, useSpring, AnimatePresence, type Variants,
+  motion, useInView, useMotionValue, useSpring, AnimatePresence, useScroll, useTransform, type Variants,
 } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -42,12 +42,52 @@ const NAV = [
 const BUDGETS = ["₹2,999 – ₹5,999", "₹5,999 – ₹8,999", "₹8,999 – ₹14,999", "₹14,999+"];
 
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
   show: (i = 0) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.55, ease: "easeOut", delay: i * 0.05 },
+    opacity: 1, y: 0, filter: "blur(0px)",
+    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
   }),
 };
+
+const cinematicReveal: Variants = {
+  hidden: { opacity: 0, y: 60, scale: 0.96, filter: "blur(16px)" },
+  show: (i = 0) => ({
+    opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
+    transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: i * 0.09 },
+  }),
+};
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
+  return (
+    <motion.div
+      style={{ scaleX, transformOrigin: "0% 50%" }}
+      className="fixed inset-x-0 top-0 z-[60] h-[2px] bg-gradient-to-r from-[#2563EB] via-[#60a5fa] to-[#2563EB]"
+    />
+  );
+}
+
+function SplitHeading({ prefix, accent }: { prefix: string; accent: string }) {
+  const words = `${prefix} ${accent}`.split(" ");
+  const accentStart = prefix.split(" ").filter(Boolean).length;
+  return (
+    <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[3.75rem]">
+      {words.map((w, i) => (
+        <span key={i} className="mr-[0.25em] inline-block overflow-hidden align-bottom">
+          <motion.span
+            initial={{ y: "110%", opacity: 0 }}
+            animate={{ y: "0%", opacity: 1 }}
+            transition={{ delay: 0.15 + i * 0.08, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className={`inline-block ${i >= accentStart ? "bg-gradient-to-r from-[#2563EB] to-[#60a5fa] bg-clip-text text-transparent" : ""}`}
+          >
+            {w}
+          </motion.span>
+        </span>
+      ))}
+    </h1>
+  );
+}
 
 export default function HomePage() {
   const [data, setData] = useState<CmsData | null>(null);
@@ -182,16 +222,23 @@ function Nav({ logo }: { logo: { url: string; alt: string } }) {
 
 function SectionHeader({ eyebrow, title, subtitle }: { eyebrow?: string; title: string; subtitle?: string }) {
   return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
+    <motion.div
+      initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
+      variants={{ show: { transition: { staggerChildren: 0.12 } } }}
+      className="mx-auto mb-12 max-w-2xl text-center"
+    >
       {eyebrow && (
-        <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs font-medium text-[#2563EB] backdrop-blur">
+        <motion.span
+          variants={fadeUp}
+          className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs font-medium text-[#2563EB] backdrop-blur"
+        >
           <Sparkles className="h-3 w-3" />
           {eyebrow}
-        </span>
+        </motion.span>
       )}
-      <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">{title}</h2>
-      {subtitle && <p className="mt-4 text-pretty text-base text-muted-foreground sm:text-lg">{subtitle}</p>}
-    </div>
+      <motion.h2 variants={cinematicReveal} className="text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">{title}</motion.h2>
+      {subtitle && <motion.p variants={fadeUp} className="mt-4 text-pretty text-base text-muted-foreground sm:text-lg">{subtitle}</motion.p>}
+    </motion.div>
   );
 }
 
@@ -201,26 +248,56 @@ function Hero({ hero }: { hero: CmsData["hero"] }) {
     subheading: "", cta_primary_label: "Get Free Quote", cta_primary_href: "#contact",
     cta_secondary_label: "WhatsApp Now", cta_secondary_href: "#", image_url: "", badges: [],
   };
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const imgY = useTransform(scrollYProgress, [0, 1], [0, 140]);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const glowOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.2]);
   return (
-    <section id="home" className="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
+    <section ref={heroRef} id="home" className="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.18),transparent_60%)] blur-3xl" />
+        <motion.div
+          style={{ opacity: glowOpacity }}
+          animate={{ scale: [1, 1.15, 1], rotate: [0, 20, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.22),transparent_60%)] blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, 40, -30, 0], y: [0, -20, 30, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/3 left-10 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(96,165,250,0.18),transparent_70%)] blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, -30, 20, 0], y: [0, 30, -20, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-0 right-10 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.15),transparent_70%)] blur-3xl"
+        />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(11,18,32,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(11,18,32,0.04)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)]" />
       </div>
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
-        <motion.div initial="hidden" animate="show" variants={fadeUp} className="lg:col-span-6">
+        <motion.div style={{ y: textY }} className="lg:col-span-6">
           {h.eyebrow && (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2563EB]/20 bg-[#2563EB]/5 px-3 py-1 text-xs font-medium text-[#2563EB]">
+            <motion.span
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#2563EB]/20 bg-[#2563EB]/5 px-3 py-1 text-xs font-medium text-[#2563EB]"
+            >
               <Star className="h-3 w-3 fill-[#2563EB]" />
               {h.eyebrow}
-            </span>
+            </motion.span>
           )}
-          <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[3.75rem]">
-            {h.heading_prefix}{" "}
-            <span className="bg-gradient-to-r from-[#2563EB] to-[#60a5fa] bg-clip-text text-transparent">{h.heading_accent}</span>
-          </h1>
-          <p className="mt-5 max-w-xl text-pretty text-base text-muted-foreground sm:text-lg">{h.subheading}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <SplitHeading prefix={h.heading_prefix} accent={h.heading_accent} />
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-5 max-w-xl text-pretty text-base text-muted-foreground sm:text-lg"
+          >{h.subheading}</motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.75, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-8 flex flex-wrap gap-3"
+          >
             <a href={h.cta_primary_href || "#contact"} className="group inline-flex items-center gap-2 rounded-lg bg-[#0B1220] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[#0B1220]/20 transition hover:brightness-110 dark:bg-white dark:text-[#0B1220]">
               {h.cta_primary_label}
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -229,24 +306,41 @@ function Hero({ hero }: { hero: CmsData["hero"] }) {
               <MessageCircle className="h-4 w-4 text-[#25D366]" />
               {h.cta_secondary_label}
             </a>
-          </div>
+          </motion.div>
           {h.badges?.length ? (
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.95, duration: 0.8 }}
+              className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground"
+            >
               {h.badges.map((b) => (
                 <div key={b} className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-[#2563EB]" /> {b}
                 </div>
               ))}
-            </div>
+            </motion.div>
           ) : null}
         </motion.div>
-        <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }} className="lg:col-span-6">
-          <div className="relative">
-            <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-tr from-[#2563EB]/20 via-transparent to-[#2563EB]/10 blur-2xl" />
-            <div className="overflow-hidden rounded-2xl border border-border/60 bg-white/70 p-2 shadow-2xl shadow-[#0B1220]/10 backdrop-blur dark:bg-white/5">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 40, filter: "blur(20px)" }}
+          animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+          style={{ y: imgY, scale: imgScale }}
+          className="lg:col-span-6"
+        >
+          <motion.div
+            animate={{ y: [0, -14, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="relative"
+          >
+            <motion.div
+              animate={{ opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-tr from-[#2563EB]/30 via-transparent to-[#60a5fa]/20 blur-3xl"
+            />
+            <div className="overflow-hidden rounded-2xl border border-border/60 bg-white/70 p-2 shadow-2xl shadow-[#0B1220]/20 backdrop-blur dark:bg-white/5">
               <img src={h.image_url || heroMockup} alt="WEBARQN dashboard preview" width={1408} height={1008} className="w-full rounded-xl" />
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
@@ -287,7 +381,7 @@ function Services({ services }: { services: CmsData["services"] }) {
           {services.map((s, i) => {
             const Icon = getIcon(s.icon);
             return (
-              <motion.div key={s.id} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} custom={i}
+              <motion.div key={s.id} variants={cinematicReveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} custom={i}
                 className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 transition hover:-translate-y-1 hover:border-[#2563EB]/40 hover:shadow-xl hover:shadow-[#2563EB]/10">
                 <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-[#2563EB]/5 blur-2xl transition group-hover:bg-[#2563EB]/15" />
                 <div className="relative">
@@ -343,18 +437,37 @@ function Stats({ stats }: { stats: CmsData["stats"] }) {
   return (
     <section className="relative py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-border/60 bg-gradient-to-br from-[#0B1220] to-[#111a30] p-8 text-white shadow-2xl sm:p-12">
+        <motion.div
+          initial={{ opacity: 0, y: 60, scale: 0.96 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-[#0B1220] to-[#111a30] p-8 text-white shadow-2xl sm:p-12"
+        >
+          <motion.div
+            aria-hidden
+            animate={{ x: ["-120%", "220%"] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
+            className="pointer-events-none absolute inset-y-0 -left-1/4 w-1/3 rotate-12 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-xl"
+          />
           <div className={`grid grid-cols-2 gap-8 md:grid-cols-${Math.max(1, Math.min(stats.length, 5))}`}>
-            {stats.map((s) => (
-              <div key={s.id} className="text-center">
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="text-center"
+              >
                 <div className="bg-gradient-to-r from-white to-[#93c5fd] bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
                   <Counter to={s.number} suffix={s.suffix} />
                 </div>
                 <div className="mt-2 text-xs font-medium uppercase tracking-wider text-white/60 sm:text-sm">{s.label}</div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -368,7 +481,7 @@ function Pricing({ plans }: { plans: CmsData["plans"] }) {
           subtitle="Pick the plan that matches your goals. All plans include free SSL, deployment and lifetime guidance." />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
           {plans.map((p, i) => (
-            <motion.div key={p.id} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} custom={i}
+            <motion.div key={p.id} variants={cinematicReveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }} custom={i}
               className={`relative flex flex-col rounded-2xl border p-6 shadow-sm transition hover:-translate-y-1 ${p.popular ? "border-[#2563EB] bg-gradient-to-b from-[#2563EB]/5 to-transparent shadow-xl shadow-[#2563EB]/20" : "border-border/60 bg-card"}`}>
               {p.popular && (
                 <div className="absolute -top-3 right-6 rounded-full bg-[#2563EB] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white shadow-lg">Most Popular</div>
@@ -703,6 +816,7 @@ function LandingPage({ data }: { data: CmsData }) {
   };
   return (
     <div className="min-h-screen bg-background font-sans text-foreground antialiased [scroll-behavior:smooth]">
+      <ScrollProgress />
       <Nav logo={data.logo} />
       <main>
         {data.hero?.enabled !== false && <Hero hero={data.hero} />}
