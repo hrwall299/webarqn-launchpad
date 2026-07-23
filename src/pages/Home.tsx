@@ -222,16 +222,23 @@ function Nav({ logo }: { logo: { url: string; alt: string } }) {
 
 function SectionHeader({ eyebrow, title, subtitle }: { eyebrow?: string; title: string; subtitle?: string }) {
   return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
+    <motion.div
+      initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
+      variants={{ show: { transition: { staggerChildren: 0.12 } } }}
+      className="mx-auto mb-12 max-w-2xl text-center"
+    >
       {eyebrow && (
-        <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs font-medium text-[#2563EB] backdrop-blur">
+        <motion.span
+          variants={fadeUp}
+          className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs font-medium text-[#2563EB] backdrop-blur"
+        >
           <Sparkles className="h-3 w-3" />
           {eyebrow}
-        </span>
+        </motion.span>
       )}
-      <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">{title}</h2>
-      {subtitle && <p className="mt-4 text-pretty text-base text-muted-foreground sm:text-lg">{subtitle}</p>}
-    </div>
+      <motion.h2 variants={cinematicReveal} className="text-balance text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">{title}</motion.h2>
+      {subtitle && <motion.p variants={fadeUp} className="mt-4 text-pretty text-base text-muted-foreground sm:text-lg">{subtitle}</motion.p>}
+    </motion.div>
   );
 }
 
