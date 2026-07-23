@@ -1,7 +1,7 @@
 // Landing page for WEBARQN. Fully driven by Supabase CMS data.
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
-  motion, useInView, useMotionValue, useSpring, AnimatePresence, type Variants,
+  motion, useInView, useMotionValue, useSpring, AnimatePresence, useScroll, useTransform, type Variants,
 } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -42,12 +42,52 @@ const NAV = [
 const BUDGETS = ["₹2,999 – ₹5,999", "₹5,999 – ₹8,999", "₹8,999 – ₹14,999", "₹14,999+"];
 
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
   show: (i = 0) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.55, ease: "easeOut", delay: i * 0.05 },
+    opacity: 1, y: 0, filter: "blur(0px)",
+    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 },
   }),
 };
+
+const cinematicReveal: Variants = {
+  hidden: { opacity: 0, y: 60, scale: 0.96, filter: "blur(16px)" },
+  show: (i = 0) => ({
+    opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
+    transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: i * 0.09 },
+  }),
+};
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
+  return (
+    <motion.div
+      style={{ scaleX, transformOrigin: "0% 50%" }}
+      className="fixed inset-x-0 top-0 z-[60] h-[2px] bg-gradient-to-r from-[#2563EB] via-[#60a5fa] to-[#2563EB]"
+    />
+  );
+}
+
+function SplitHeading({ prefix, accent }: { prefix: string; accent: string }) {
+  const words = `${prefix} ${accent}`.split(" ");
+  const accentStart = prefix.split(" ").filter(Boolean).length;
+  return (
+    <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[3.75rem]">
+      {words.map((w, i) => (
+        <span key={i} className="mr-[0.25em] inline-block overflow-hidden align-bottom">
+          <motion.span
+            initial={{ y: "110%", opacity: 0 }}
+            animate={{ y: "0%", opacity: 1 }}
+            transition={{ delay: 0.15 + i * 0.08, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className={`inline-block ${i >= accentStart ? "bg-gradient-to-r from-[#2563EB] to-[#60a5fa] bg-clip-text text-transparent" : ""}`}
+          >
+            {w}
+          </motion.span>
+        </span>
+      ))}
+    </h1>
+  );
+}
 
 export default function HomePage() {
   const [data, setData] = useState<CmsData | null>(null);
