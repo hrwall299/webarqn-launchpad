@@ -241,26 +241,56 @@ function Hero({ hero }: { hero: CmsData["hero"] }) {
     subheading: "", cta_primary_label: "Get Free Quote", cta_primary_href: "#contact",
     cta_secondary_label: "WhatsApp Now", cta_secondary_href: "#", image_url: "", badges: [],
   };
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const imgY = useTransform(scrollYProgress, [0, 1], [0, 140]);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const glowOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.2]);
   return (
-    <section id="home" className="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
+    <section ref={heroRef} id="home" className="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-24">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.18),transparent_60%)] blur-3xl" />
+        <motion.div
+          style={{ opacity: glowOpacity }}
+          animate={{ scale: [1, 1.15, 1], rotate: [0, 20, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-40 left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.22),transparent_60%)] blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, 40, -30, 0], y: [0, -20, 30, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/3 left-10 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(96,165,250,0.18),transparent_70%)] blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, -30, 20, 0], y: [0, 30, -20, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-0 right-10 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.15),transparent_70%)] blur-3xl"
+        />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(11,18,32,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(11,18,32,0.04)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)]" />
       </div>
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
-        <motion.div initial="hidden" animate="show" variants={fadeUp} className="lg:col-span-6">
+        <motion.div style={{ y: textY }} className="lg:col-span-6">
           {h.eyebrow && (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2563EB]/20 bg-[#2563EB]/5 px-3 py-1 text-xs font-medium text-[#2563EB]">
+            <motion.span
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#2563EB]/20 bg-[#2563EB]/5 px-3 py-1 text-xs font-medium text-[#2563EB]"
+            >
               <Star className="h-3 w-3 fill-[#2563EB]" />
               {h.eyebrow}
-            </span>
+            </motion.span>
           )}
-          <h1 className="mt-5 text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[3.75rem]">
-            {h.heading_prefix}{" "}
-            <span className="bg-gradient-to-r from-[#2563EB] to-[#60a5fa] bg-clip-text text-transparent">{h.heading_accent}</span>
-          </h1>
-          <p className="mt-5 max-w-xl text-pretty text-base text-muted-foreground sm:text-lg">{h.subheading}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <SplitHeading prefix={h.heading_prefix} accent={h.heading_accent} />
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-5 max-w-xl text-pretty text-base text-muted-foreground sm:text-lg"
+          >{h.subheading}</motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.75, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-8 flex flex-wrap gap-3"
+          >
             <a href={h.cta_primary_href || "#contact"} className="group inline-flex items-center gap-2 rounded-lg bg-[#0B1220] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[#0B1220]/20 transition hover:brightness-110 dark:bg-white dark:text-[#0B1220]">
               {h.cta_primary_label}
               <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -269,24 +299,41 @@ function Hero({ hero }: { hero: CmsData["hero"] }) {
               <MessageCircle className="h-4 w-4 text-[#25D366]" />
               {h.cta_secondary_label}
             </a>
-          </div>
+          </motion.div>
           {h.badges?.length ? (
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.95, duration: 0.8 }}
+              className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground"
+            >
               {h.badges.map((b) => (
                 <div key={b} className="flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4 text-[#2563EB]" /> {b}
                 </div>
               ))}
-            </div>
+            </motion.div>
           ) : null}
         </motion.div>
-        <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }} className="lg:col-span-6">
-          <div className="relative">
-            <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-tr from-[#2563EB]/20 via-transparent to-[#2563EB]/10 blur-2xl" />
-            <div className="overflow-hidden rounded-2xl border border-border/60 bg-white/70 p-2 shadow-2xl shadow-[#0B1220]/10 backdrop-blur dark:bg-white/5">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 40, filter: "blur(20px)" }}
+          animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+          style={{ y: imgY, scale: imgScale }}
+          className="lg:col-span-6"
+        >
+          <motion.div
+            animate={{ y: [0, -14, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="relative"
+          >
+            <motion.div
+              animate={{ opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-tr from-[#2563EB]/30 via-transparent to-[#60a5fa]/20 blur-3xl"
+            />
+            <div className="overflow-hidden rounded-2xl border border-border/60 bg-white/70 p-2 shadow-2xl shadow-[#0B1220]/20 backdrop-blur dark:bg-white/5">
               <img src={h.image_url || heroMockup} alt="WEBARQN dashboard preview" width={1408} height={1008} className="w-full rounded-xl" />
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
