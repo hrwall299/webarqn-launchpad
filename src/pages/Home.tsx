@@ -130,19 +130,19 @@ function Nav({ logo }: { logo: { url: string; alt: string } }) {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        <a href="#home" className="flex items-center gap-2 font-bold tracking-tight">
+        <a href="#home" className="flex items-center gap-4">
           {logo.url ? (
-            <span className="grid place-items-center rounded-full bg-white border border-black/90 overflow-hidden h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 lg:h-[72px] lg:w-[72px] p-1.5 shadow-sm">
+            <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] p-0.5 shadow-sm">
               <img src={logo.url} alt={logo.alt || "WEBARQN"} className="h-full w-full object-contain" />
             </span>
           ) : (
-            <>
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-[oklch(0.16_0.04_265)] text-white dark:bg-[oklch(0.62_0.2_264)]">
-                <Sparkles className="h-4 w-4" />
-              </span>
-              <span className="text-lg">{logo.alt || "WEBARQN"}</span>
-            </>
+            <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] p-0.5 shadow-sm">
+              <Sparkles className="h-5 w-5 text-[#0B1220]" />
+            </span>
           )}
+          <span className="text-[20px] font-bold leading-none tracking-[1px] text-[#0B1220] sm:text-[24px] lg:text-[28px]">
+            WEBARQN
+          </span>
         </a>
         <nav className="hidden items-center gap-1 md:flex">
           {NAV.map((n) => (
