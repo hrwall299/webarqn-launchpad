@@ -125,11 +125,11 @@ function Nav({ logo }: { logo: { url: string; alt: string } }) {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <a href="#home" onClick={handleLogoClick} className="flex items-center gap-4 select-none">
           {logo.url ? (
-            <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] p-0.5 shadow-sm">
-              <img src={logo.url} alt={logo.alt || "WEBARQN"} width={70} height={70} decoding="async" className="h-full w-full object-contain" />
+            <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] shadow-sm">
+              <img src={logo.url} alt={logo.alt || "WEBARQN"} width={70} height={70} decoding="async" className="h-full w-full object-cover" />
             </span>
           ) : (
-            <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] p-0.5 shadow-sm">
+            <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] shadow-sm">
               <Sparkles className="h-5 w-5 text-[#0B1220]" />
             </span>
           )}
