@@ -279,7 +279,7 @@ function Services({ services }: { services: CmsData["services"] }) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader eyebrow="Services" title="Everything you need to go online"
           subtitle="From your first landing page to a full CRM, we build the digital stack that scales your business." />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {services.map((s) => {
             const Icon = getIcon(s.icon);
             return (
