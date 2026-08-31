@@ -125,15 +125,15 @@ function Nav({ logo }: { logo: { url: string; alt: string } }) {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <a href="#home" onClick={handleLogoClick} className="flex items-center gap-4 select-none">
           {logo.url ? (
-            <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] shadow-sm">
+            <span className="animate-logo-pop grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] shadow-sm transition-transform duration-300 hover:scale-110 hover:rotate-3">
               <img src={logo.url} alt={logo.alt || "WEBARQN"} width={70} height={70} decoding="async" className="h-full w-full object-cover" />
             </span>
           ) : (
-            <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] shadow-sm">
+            <span className="animate-logo-pop grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] shadow-sm transition-transform duration-300 hover:scale-110 hover:rotate-3">
               <Sparkles className="h-5 w-5 text-[#0B1220]" />
             </span>
           )}
-          <span className="text-[20px] font-bold leading-none tracking-[1px] text-[#0B1220] sm:text-[24px] lg:text-[28px]">
+          <span className="animate-brand-slide text-[20px] font-bold leading-none tracking-[1px] text-[#0B1220] sm:text-[24px] lg:text-[28px]">
             WEBARQN
           </span>
         </a>
