@@ -1,5 +1,6 @@
 // Landing page for WEBARQN. Fully driven by Supabase CMS data.
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, useRef, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   ArrowRight, Instagram, Phone, Mail, MapPin, Globe, Sun, Moon, Menu, X,
