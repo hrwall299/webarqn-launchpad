@@ -21,6 +21,7 @@ export type ContactDetails = {
   email: string;
   phone: string;
   whatsapp: string;
+  instagram: string;
   website: string;
   address: string;
   google_maps_embed: string;
