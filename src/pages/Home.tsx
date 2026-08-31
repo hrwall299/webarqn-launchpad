@@ -106,10 +106,24 @@ function useTheme() {
 function Nav({ logo }: { logo: { url: string; alt: string } }) {
   const { theme, toggle } = useTheme();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const taps = useRef<number[]>([]);
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    const now = Date.now();
+    taps.current = taps.current.filter((t) => now - t < 600);
+    taps.current.push(now);
+    if (taps.current.length >= 3) {
+      e.preventDefault();
+      taps.current = [];
+      navigate("/admin");
+    }
+  };
+
   return (
     <header className="fixed top-0 z-50 w-full border-b border-border/60 bg-background/95">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        <a href="#home" className="flex items-center gap-4">
+        <a href="#home" onClick={handleLogoClick} className="flex items-center gap-4 select-none">
           {logo.url ? (
             <span className="grid place-items-center rounded-full bg-white border border-black overflow-hidden h-[54px] w-[54px] sm:h-[62px] sm:w-[62px] lg:h-[70px] lg:w-[70px] p-0.5 shadow-sm">
               <img src={logo.url} alt={logo.alt || "WEBARQN"} width={70} height={70} decoding="async" className="h-full w-full object-contain" />
