@@ -416,7 +416,7 @@ function ContactEditor() {
   if (loading || !value) return <Section title="Contact"><Card>Loading…</Card></Section>;
   const fields: [string, string][] = [
     ["heading", "Heading"], ["subheading", "Subheading"], ["company_name", "Company Name"],
-    ["email", "Email"], ["phone", "Phone"], ["whatsapp", "WhatsApp URL"], ["website", "Website"],
+    ["email", "Email"], ["phone", "Phone"], ["whatsapp", "WhatsApp URL"], ["instagram", "Instagram URL"], ["website", "Website"],
     ["address", "Address / Location"], ["business_hours", "Business Hours"], ["google_maps_embed", "Google Maps Embed URL"],
   ];
   return (
